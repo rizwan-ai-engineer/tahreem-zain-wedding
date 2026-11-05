@@ -27,3 +27,23 @@
   const form=document.querySelector('#rsvp-form');
   if(form)form.addEventListener('submit',e=>{e.preventDefault();const name=document.querySelector('#guest-name').value.trim();const chosen=form.querySelector('input[name="attendance"]:checked').value;const msg=`Assalam o Alaikum, ${name ? 'this is '+name+'. ' : ''}I would like to confirm that I am ${chosen === 'unable to attend' ? 'unable to attend' : 'attending '+chosen} for Tahreem Mukhtar and Zain’s wedding celebrations.`;window.open('https://wa.me/923042844248?text='+encodeURIComponent(msg),'_blank','noopener,noreferrer');});
 })();
+
+
+// Highlight the section currently in view while scrolling.
+(() => {
+  const links = [...document.querySelectorAll('.primary-nav a[href^="#"]')];
+  const sections = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  if (!sections.length || !('IntersectionObserver' in window)) return;
+  const observer = new IntersectionObserver(entries => {
+    const visible = entries.filter(entry => entry.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio);
+    if (!visible.length) return;
+    const id = visible[0].target.id;
+    links.forEach(link => {
+      const active = link.getAttribute('href') === '#' + id;
+      link.classList.toggle('current', active);
+      if (active) link.setAttribute('aria-current','location');
+      else link.removeAttribute('aria-current');
+    });
+  }, {rootMargin:'-20% 0px -50% 0px',threshold:[0,.1,.3,.5]});
+  sections.forEach(section => observer.observe(section));
+})();
